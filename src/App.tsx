@@ -6,7 +6,7 @@ import { Grow } from "./Grow";
 import { Insights } from "./Insights";
 import { Sheet, inputCls, btnCls } from "./ui";
 import { LockScreen, PinSetup, useLock } from "./Lock";
-import { act, activeSpaces, exportFile, importFile, live, useStore, type State } from "./store";
+import { act, activeSpaces, exportFile, importFile, live, storageError, useStore, type State } from "./store";
 import { kst } from "./lib";
 
 type Tab = "today" | "cal" | "money" | "grow" | "insights";
@@ -43,7 +43,7 @@ function Main({ s }: { s: State }) {
 
   return (
     <div className="mx-auto min-h-[100dvh] max-w-lg">
-      <header className="pt-safe sticky top-0 z-20 bg-[#f6f7f9]/90 px-4 backdrop-blur">
+      <header className="pt-safe sticky top-0 z-20 bg-bg/90 px-4 backdrop-blur">
         <div className="flex items-center justify-between py-3">
           <h1 className="text-xl font-bold">{TABS.find((x) => x.v === tab)!.label}</h1>
           <button onClick={() => setSettings(true)} aria-label="설정" className="relative rounded-full p-1.5 text-gray-500 active:bg-gray-200">
@@ -56,6 +56,7 @@ function Main({ s }: { s: State }) {
       </header>
 
       <main className="px-4 pb-28">
+        {storageError && <p className="mb-3 rounded-2xl bg-red-500/15 px-4 py-3 text-sm text-red-500">{storageError}</p>}
         {nudge && tab === "today" && (
           <button onClick={() => setSettings(true)} className="mb-3 w-full rounded-2xl bg-amber-50 px-4 py-3 text-left text-sm text-amber-800">
             {since === null ? "아직 백업한 적이 없어요." : `백업한 지 ${since}일 지났어요.`} 기록은 이 폰에만 있어요 — 탭해서 맥으로 보내기
@@ -77,7 +78,7 @@ function Main({ s }: { s: State }) {
         {tab === "insights" && <Insights s={s} />}
       </main>
 
-      <nav className="pb-safe fixed inset-x-0 bottom-0 z-30 border-t border-gray-200 bg-white/95 backdrop-blur">
+      <nav className="pb-safe fixed inset-x-0 bottom-0 z-30 border-t border-gray-200 bg-card/95 backdrop-blur">
         <div className="mx-auto flex max-w-lg">
           {TABS.map((x) => (
             <button key={x.v} onClick={() => go(x.v)} className={`flex flex-1 flex-col items-center gap-0.5 pt-2 text-[11px] ${tab === x.v ? "text-blue-600" : "text-gray-400"}`}>

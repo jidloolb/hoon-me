@@ -2,7 +2,7 @@
 // 기기 간 연동은 파일(에어드롭)로: 내보내기 → 상대 기기에서 가져오기 → 레코드 단위 병합.
 // 병합 규칙: 같은 id 면 updatedAt 이 더 큰 쪽이 이긴다. 삭제는 deleted 표시(묘비)로 남겨야 병합 때 되살아나지 않는다.
 import { useSyncExternalStore } from "react";
-import { kst, SPACE_COLORS } from "./lib";
+import { kst, SPACE_COLORS, LIGHT_TO_DARK } from "./lib";
 
 type Base = { id: string; updatedAt: number; deleted?: boolean };
 export type Space = Base & { name: string; color: string; sort: number; archived: boolean };
@@ -125,12 +125,22 @@ let ready = false;
 const listeners = new Set<() => void>();
 const emit = () => listeners.forEach((l) => l());
 
+// 저장소를 못 열면(사파리 개인정보 보호 모드 등) 빈 화면으로 멈추지 말고, 경고를 띄운 채 앱은 연다
+export let storageError: string | null = null;
 export async function loadStore() {
-  const saved = (await idbGet("state")) as Partial<State> | undefined;
+  let saved: Partial<State> | undefined;
+  try {
+    saved = (await Promise.race([idbGet("state"), new Promise((_, rej) => setTimeout(() => rej(new Error("시간 초과")), 5000))])) as Partial<State> | undefined;
+  } catch (e) {
+    storageError = `기기 저장소를 열지 못했어요(${(e as Error).message}). 지금 적는 건 저장되지 않을 수 있어요.`;
+    console.error(e);
+  }
   if (saved) {
     const base = empty();
     for (const c of COLLECTIONS) (base as Record<string, unknown>)[c] = { ...(base[c] as object), ...((saved[c] as object) ?? {}) };
     base.meta = { ...base.meta, ...(saved.meta ?? {}) };
+    // 다크 테마 전환(10-10): 밝은 테마 때 저장된 Space 색을 다크 단계로. updatedAt 은 안 건드린다(병합 순서 유지)
+    for (const sp of Object.values(base.spaces)) if (LIGHT_TO_DARK[sp.color]) sp.color = LIGHT_TO_DARK[sp.color];
     state = base;
   }
   ready = true;
@@ -179,7 +189,7 @@ export const act = {
   // Space
   addSpace(name: string) {
     const n = live(state.spaces).length;
-    put("spaces", { id: uid(), name, color: SPACE_COLORS[n] ?? "#8a8a86", sort: n, archived: false, updatedAt: 0 });
+    put("spaces", { id: uid(), name, color: SPACE_COLORS[n] ?? "#6f6790", sort: n, archived: false, updatedAt: 0 });
   },
   renameSpace: (id: string, name: string) => patch("spaces", id, { name }),
   archiveSpace: (id: string) => patch("spaces", id, { archived: true }),
@@ -342,7 +352,8 @@ export async function importFile(f: File): Promise<{ added: number; updated: num
   for (const c of COLLECTIONS) {
     const mine = { ...(state[c] as Record<string, Base>) };
     const theirs = (data.state[c] ?? {}) as Record<string, Base>;
-    for (const [id, rec] of Object.entries(theirs)) {
+    for (const [id, rec0] of Object.entries(theirs)) {
+      const rec = c === "spaces" && LIGHT_TO_DARK[(rec0 as Space).color] ? { ...rec0, color: LIGHT_TO_DARK[(rec0 as Space).color] } : rec0;
       const cur = mine[id];
       if (!cur) {
         mine[id] = rec;

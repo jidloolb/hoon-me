@@ -75,7 +75,7 @@ function Week({ s, anchor, onPick, habitRate }: { s: State; anchor: string; onPi
                         const sp = spaceOf(s, b.spaceId);
                         return (
                           <li key={b.id} className="flex items-center gap-1.5 text-[13px]">
-                            <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: sp?.color ?? "#8a8a86" }} />
+                            <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: sp?.color ?? "#6f6790" }} />
                             <span className="w-11 shrink-0 tabular-nums text-gray-400">{hm(b.start)}</span>
                             <span className={`truncate ${b.status === "done" ? "text-gray-400 line-through" : ""}`}>{b.title}</span>
                           </li>
@@ -127,7 +127,7 @@ function Month({ s, anchor, onPick, habitRate }: { s: State; anchor: string; onP
           const inMonth = d.startsWith(month);
           const blocks = blocksOn(s, d).filter((b) => b.status !== "skipped");
           // 그 날 쓴 Space 색 점(최대 4)
-          const colors = [...new Set(blocks.map((b) => spaceOf(s, b.spaceId)?.color ?? "#8a8a86"))].slice(0, 4);
+          const colors = [...new Set(blocks.map((b) => spaceOf(s, b.spaceId)?.color ?? "#6f6790"))].slice(0, 4);
           const rate = habitRate(d);
           return (
             <button key={d} onClick={() => onPick(d)} className={`flex h-14 flex-col items-center rounded-xl pt-1 ${inMonth ? "" : "opacity-30"} ${d === t ? "bg-blue-50" : ""}`}>

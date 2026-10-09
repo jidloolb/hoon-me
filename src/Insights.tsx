@@ -167,7 +167,7 @@ export function Insights({ s }: { s: State }) {
         <p className="mb-1 text-xs text-gray-400">지출</p>
         <Columns items={expByMonth} fmt={wonShort} />
         <p className="mb-1 mt-4 text-xs text-gray-400">모으기에 넣은 돈</p>
-        <Columns items={saveByMonth} color="#1baf7a" fmt={wonShort} />
+        <Columns items={saveByMonth} color="#199e70" fmt={wonShort} />
         <p className="mt-3 text-sm text-gray-600">
           지금 모은 돈 <b>{wonShort(fundTotal)}원</b>
         </p>

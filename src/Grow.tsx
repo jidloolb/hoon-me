@@ -71,7 +71,7 @@ function Body({ s }: { s: State }) {
       <Card title="컨디션" right={<span className="text-xs text-gray-400">하루 마무리 때 기록</span>}>
         {conds.length > 1 ? (
           <>
-            <Spark values={conds.slice(-30).map((m) => m.value)} color="#1baf7a" />
+            <Spark values={conds.slice(-30).map((m) => m.value)} color="#199e70" />
             <p className="mt-1 text-xs text-gray-500">최근 {Math.min(30, conds.length)}일 평균 {(conds.slice(-30).reduce((a, m) => a + m.value, 0) / Math.min(30, conds.length)).toFixed(1)} / 5</p>
           </>
         ) : (
@@ -81,7 +81,7 @@ function Body({ s }: { s: State }) {
       <Card title="수면" right={<span className="text-xs text-gray-400">습관 '수면'에서</span>}>
         {sleep.length > 1 ? (
           <>
-            <Spark values={sleep.slice(-30).map((l) => l.value!)} color="#4a3aa7" />
+            <Spark values={sleep.slice(-30).map((l) => l.value!)} color="#9085e9" />
             <p className="mt-1 text-xs text-gray-500">최근 {Math.min(30, sleep.length)}회 평균 {(sleep.slice(-30).reduce((a, l) => a + l.value!, 0) / Math.min(30, sleep.length)).toFixed(1)}시간</p>
           </>
         ) : (
@@ -127,7 +127,7 @@ function Learn({ s }: { s: State }) {
               </div>
               {b.total ? (
                 <div className="mt-1.5 h-1.5 rounded-full bg-gray-100">
-                  <div className="h-1.5 rounded-full bg-[#eb6834]" style={{ width: `${Math.min(100, (p / b.total) * 100)}%` }} />
+                  <div className="h-1.5 rounded-full bg-[#d95926]" style={{ width: `${Math.min(100, (p / b.total) * 100)}%` }} />
                 </div>
               ) : null}
             </button>
@@ -221,7 +221,7 @@ function BookSheet({ s, book, progress, onClose }: { s: State; book: Book | null
       {b.kind === "책" && <p className="mt-1 text-xs text-gray-400">적으면 오늘 '독서' 습관도 같이 체크돼요</p>}
       <div className="mt-4 flex gap-2">
         {(["진행", "완료", "보류"] as const).map((st) => (
-          <button key={st} onClick={() => act.setBookStatus(b.id, st)} className={`flex-1 rounded-xl py-2 text-sm ${b.status === st ? "bg-gray-900 text-white" : "bg-gray-100"}`}>
+          <button key={st} onClick={() => act.setBookStatus(b.id, st)} className={`flex-1 rounded-xl py-2 text-sm ${b.status === st ? "bg-accent text-white" : "bg-gray-100"}`}>
             {st}
           </button>
         ))}
@@ -287,7 +287,7 @@ function Notes({ s }: { s: State }) {
           저장
         </button>
       </Card>
-      <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="검색 — 기록·할일·블록·돈·배움·회고 전부" className="w-full rounded-2xl border border-gray-200 bg-white px-4 py-2.5 outline-none focus:border-blue-500" />
+      <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="검색 — 기록·할일·블록·돈·배움·회고 전부" className="w-full rounded-2xl border border-gray-200 bg-card px-4 py-2.5 outline-none focus:border-blue-500" />
       {others.length > 0 && (
         <Card title="다른 곳에서">
           {others.map((o) => (

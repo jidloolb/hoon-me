@@ -4,8 +4,9 @@
 
 html,
 body {
-  background: #f6f7f9;
-  color: #111;
+  background: #0f0c17;
+  color: #f3f0fa;
+  color-scheme: dark; /* 날짜·시간 선택기 등 기본 컨트롤도 어둡게 */
   font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Noto Sans KR", Arial, sans-serif;
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior-y: none;
@@ -21,4 +22,17 @@ select {
 }
 .pt-safe {
   padding-top: env(safe-area-inset-top);
+}
+
+/* 입력창 기본(클래스로 지정한 배경이 있으면 그게 이긴다 — base 층이라서) */
+@layer base {
+  input,
+  textarea,
+  select {
+    color: #f3f0fa;
+    background-color: #221d33;
+  }
+  ::placeholder {
+    color: #6f6790;
+  }
 }

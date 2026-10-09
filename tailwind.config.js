@@ -1,1 +1,35 @@
-export default { content: ["./index.html", "./src/**/*.{ts,tsx}"], theme: { extend: {} }, plugins: [] };
+// 다크 보라 테마 — 화면 코드의 색 이름(gray·blue…)은 그대로 두고 값만 바꿔 끼운다.
+// gray 는 밝기를 뒤집었다(50=가장 어두운 면, 900=가장 밝은 글자). blue = 보라 강조색.
+export default {
+  content: ["./index.html", "./src/**/*.{ts,tsx}"],
+  theme: {
+    extend: {
+      colors: {
+        bg: "#0f0c17", // 바탕
+        card: "#1a1626", // 카드·시트
+        accent: "#7c5cf0", // 선택된 칩·진한 버튼
+        gray: {
+          50: "#221d33",
+          100: "#2b2540",
+          200: "#3a3354",
+          300: "#564d77",
+          400: "#8a82ab",
+          500: "#a39bc3",
+          600: "#bcb5d8",
+          700: "#d3cee6",
+          800: "#e5e1f2",
+          900: "#f3f0fa",
+        },
+        blue: {
+          50: "#2a2147",
+          500: "#9d82ff",
+          600: "#8b6cf7",
+        },
+        violet: { 100: "#3a2d63", 700: "#cbb9ff" },
+        amber: { 50: "#33260f", 500: "#f0b44c", 800: "#f3cd8a" },
+        red: { 500: "#ff6b81" },
+      },
+    },
+  },
+  plugins: [],
+};

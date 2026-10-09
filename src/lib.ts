@@ -153,5 +153,10 @@ export async function shrinkPhoto(file: File, max = 900): Promise<string> {
   }
 }
 
-// Space 색 — dataviz 기본 범주 팔레트 순서 고정(색맹 검증된 순서). 9번째부터는 회색.
-export const SPACE_COLORS = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#4a3aa7", "#e34948"];
+// Space 색 — dataviz 범주 팔레트(다크 단계) 순서 고정(색맹 검증된 순서). 9번째부터는 회색.
+export const SPACE_COLORS = ["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181", "#008300", "#9085e9", "#e66767"];
+// 예전(밝은 테마) 색 → 다크 단계. 이미 저장된 Space 색을 불러올 때 바꿔 준다.
+export const LIGHT_TO_DARK: Record<string, string> = Object.fromEntries(
+  ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#4a3aa7", "#e34948"].map((c, i) => [c, SPACE_COLORS[i]])
+);
+export const NONE_COLOR = "#6f6790";

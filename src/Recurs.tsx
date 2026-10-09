@@ -132,7 +132,7 @@ function RecurSheet({ s, edit, onClose }: { s: State; edit: Recur | "new" | null
       <div className="flex items-center gap-2">
         <input inputMode="numeric" value={day} onChange={(e) => setDay(e.target.value.replace(/\D/g, "").slice(0, 2))} className={`${inputCls} !w-20 text-center`} />
         <span className="text-sm text-gray-500">일</span>
-        <button type="button" onClick={() => setDay("31")} className={`rounded-full px-3 py-1 text-sm ${d >= 31 ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-600"}`}>
+        <button type="button" onClick={() => setDay("31")} className={`rounded-full px-3 py-1 text-sm ${d >= 31 ? "bg-accent text-white" : "bg-gray-100 text-gray-600"}`}>
           말일
         </button>
       </div>

@@ -122,7 +122,7 @@ function TxnSheet({ txn, onClose }: { txn: Txn | null; onClose: () => void }) {
       <p className="mb-2 text-xs text-gray-400">카테고리 바꾸기</p>
       <div className="flex flex-wrap gap-1.5">
         {cats.map((c) => (
-          <button key={c} onClick={() => (act.recatTxn(txn.id, c), onClose())} className={`rounded-full px-3 py-1 text-sm ${txn.category === c ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-600"}`}>
+          <button key={c} onClick={() => (act.recatTxn(txn.id, c), onClose())} className={`rounded-full px-3 py-1 text-sm ${txn.category === c ? "bg-accent text-white" : "bg-gray-100 text-gray-600"}`}>
             {c}
           </button>
         ))}

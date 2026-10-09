@@ -53,7 +53,7 @@ export function Today({ s, date, setDate }: { s: State; date: string; setDate: (
           </Card>
         </button>
       ) : (
-        <button onClick={() => setClosing(true)} className="w-full rounded-2xl bg-gray-900 py-3.5 font-semibold text-white">
+        <button onClick={() => setClosing(true)} className="w-full rounded-2xl bg-accent py-3.5 font-semibold text-white">
           {isToday ? "오늘 마무리하기" : "이 날 마무리하기"}
         </button>
       )}
@@ -110,7 +110,7 @@ function QuickAdd({ s }: { s: State }) {
   }
 
   return (
-    <form onSubmit={submit} className="rounded-2xl bg-white p-3 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+    <form onSubmit={submit} className="rounded-2xl bg-card p-3 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
       <div className="mb-2 flex items-center justify-between gap-2">
         <Seg<Mode>
           value={mode}
@@ -182,7 +182,7 @@ function HabitStrip({ s, date }: { s: State; date: string }) {
           const done = hasHabit(s, h.id, date);
           const v = s.habitLogs[`${h.id}:${date}`]?.value;
           return (
-            <button key={h.id} onClick={() => tap(h)} className={`shrink-0 rounded-full px-3.5 py-2 text-sm font-medium transition active:scale-95 ${done ? "bg-blue-600 text-white" : "bg-white text-gray-700 shadow-[0_1px_2px_rgba(0,0,0,0.06)]"}`}>
+            <button key={h.id} onClick={() => tap(h)} className={`shrink-0 rounded-full px-3.5 py-2 text-sm font-medium transition active:scale-95 ${done ? "bg-blue-600 text-white" : "bg-card text-gray-700 shadow-[0_1px_2px_rgba(0,0,0,0.06)]"}`}>
               {done ? "✓ " : ""}
               {h.name}
               {done && v != null ? ` ${v}${h.unit ?? ""}` : ""}
@@ -303,7 +303,7 @@ function Timeline({ s, date, blocks, onEmpty, onBlock }: { s: State; date: strin
         )}
         {lanes.map(({ b, lane, lanes: n }) => {
           const sp = spaceOf(s, b.spaceId);
-          const color = sp?.color ?? "#8a8a86";
+          const color = sp?.color ?? "#6f6790";
           const h = Math.max(22, ((b.end - b.start) / 60) * HOUR - 2);
           const short = h < 40;
           return (
@@ -316,7 +316,7 @@ function Timeline({ s, date, blocks, onEmpty, onBlock }: { s: State; date: strin
                 height: h,
                 left: `calc(3rem + 4px + (100% - 3rem - 8px) * ${lane / n})`,
                 width: `calc((100% - 3rem - 8px) / ${n} - 2px)`,
-                background: `${color}1f`,
+                background: `${color}38`,
                 borderLeft: `3px solid ${color}`,
               }}
             >
@@ -569,7 +569,7 @@ function DayClose({ s, date, open, onClose }: { s: State; date: string; open: bo
     if (b.status === "skipped") continue;
     const sp = spaceOf(s, b.spaceId);
     const k = sp?.id ?? "none";
-    const cur = bySpace.get(k) ?? { name: sp?.name ?? "기타", color: sp?.color ?? "#8a8a86", plan: 0, real: 0 };
+    const cur = bySpace.get(k) ?? { name: sp?.name ?? "기타", color: sp?.color ?? "#6f6790", plan: 0, real: 0 };
     cur.plan += b.end - b.start;
     if (b.status === "done") cur.real += b.actualMin ?? b.end - b.start;
     bySpace.set(k, cur);
@@ -616,13 +616,13 @@ function DayClose({ s, date, open, onClose }: { s: State; date: string; open: bo
             <div key={b.id} className="flex items-center justify-between gap-2 py-1 text-sm">
               <span className="truncate">{b.title}</span>
               <span className="flex shrink-0 gap-1">
-                <button onClick={() => act.setBlockStatus(b.id, "done", b.end - b.start)} className="rounded-lg bg-white px-2 py-1 text-xs">
+                <button onClick={() => act.setBlockStatus(b.id, "done", b.end - b.start)} className="rounded-lg bg-card px-2 py-1 text-xs">
                   했음
                 </button>
-                <button onClick={() => act.updateBlock(b.id, { date: addDays(date, 1) })} className="rounded-lg bg-white px-2 py-1 text-xs">
+                <button onClick={() => act.updateBlock(b.id, { date: addDays(date, 1) })} className="rounded-lg bg-card px-2 py-1 text-xs">
                   내일로
                 </button>
-                <button onClick={() => act.setBlockStatus(b.id, "skipped")} className="rounded-lg bg-white px-2 py-1 text-xs text-gray-500">
+                <button onClick={() => act.setBlockStatus(b.id, "skipped")} className="rounded-lg bg-card px-2 py-1 text-xs text-gray-500">
                   안 함
                 </button>
               </span>
@@ -634,7 +634,7 @@ function DayClose({ s, date, open, onClose }: { s: State; date: string; open: bo
       <p className="mb-2 text-xs text-gray-400">오늘 컨디션</p>
       <div className="mb-4 flex gap-2">
         {[1, 2, 3, 4, 5].map((n) => (
-          <button key={n} onClick={() => setCondition(n)} className={`h-11 flex-1 rounded-xl text-lg ${condition === n ? "bg-gray-900 text-white" : "bg-gray-100"}`}>
+          <button key={n} onClick={() => setCondition(n)} className={`h-11 flex-1 rounded-xl text-lg ${condition === n ? "bg-accent text-white" : "bg-gray-100"}`}>
             {["😫", "😕", "😐", "🙂", "😄"][n - 1]}
           </button>
         ))}

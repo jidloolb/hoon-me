@@ -57,7 +57,7 @@ export function PinPad({ title, onDone, error }: { title: string; onDone: (pin: 
       <p className="mb-5 text-base font-semibold">{title}</p>
       <div className="mb-3 flex gap-4">
         {[0, 1, 2, 3].map((i) => (
-          <span key={i} className={`h-3.5 w-3.5 rounded-full ${i < pin.length ? "bg-gray-900" : "bg-gray-200"}`} />
+          <span key={i} className={`h-3.5 w-3.5 rounded-full ${i < pin.length ? "bg-accent" : "bg-gray-200"}`} />
         ))}
       </div>
       <p className="mb-5 h-5 text-sm text-red-500">{error}</p>
@@ -83,7 +83,7 @@ export function PinPad({ title, onDone, error }: { title: string; onDone: (pin: 
 export function LockScreen({ onUnlock }: { onUnlock: () => void }) {
   const [err, setErr] = useState("");
   return (
-    <div className="pt-safe fixed inset-0 z-[100] flex items-center justify-center bg-[#f6f7f9]">
+    <div className="pt-safe fixed inset-0 z-[100] flex items-center justify-center bg-bg">
       <PinPad
         title="PIN 입력"
         error={err}
