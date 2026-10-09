@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Card, Check, Chips, Empty, Seg, Sheet, SpaceChips, inputCls, btnCls, ghostBtn } from "./ui";
+import { DueCard } from "./Recurs";
 import { act, activeSpaces, blocksOn, hasHabit, inbox, live, spaceOf, type Block, type Habit, type State, type Task } from "./store";
 import { addDays, dur, hm, kst, longDate, nowMin, parseMoney, shrinkPhoto, won } from "./lib";
 
@@ -30,6 +31,7 @@ export function Today({ s, date, setDate }: { s: State; date: string; setDate: (
         </button>
       </div>
 
+      {isToday && <DueCard s={s} />}
       <QuickAdd s={s} />
       <HabitStrip s={s} date={date} />
       <InboxCard s={s} onSchedule={setSchedule} />

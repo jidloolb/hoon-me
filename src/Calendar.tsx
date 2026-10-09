@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Card, Seg } from "./ui";
 import { activeSpaces, blockMinutes, blocksOn, hasHabit, live, spaceOf, type State } from "./store";
+import { recursOn } from "./Recurs";
 import { addDays, dur, hm, kst, weekday, weekdayIdx } from "./lib";
 
 // 주간·월간 달력 — 날짜를 누르면 그 날 타임라인으로
@@ -90,6 +91,9 @@ function Week({ s, anchor, onPick, habitRate }: { s: State; anchor: string; onPi
                   {doneMin > 0 && <p>{dur(doneMin)}</p>}
                   {rate > 0 && <p>습관 {Math.round(rate * 100)}%</p>}
                   {s.days[d] && <p>✓ 마무리</p>}
+                  {recursOn(s, d).map((r) => (
+                    <p key={r.id}>💸 {r.name}</p>
+                  ))}
                 </div>
               </div>
             </Card>
@@ -133,6 +137,7 @@ function Month({ s, anchor, onPick, habitRate }: { s: State; anchor: string; onP
                   <span key={c} className="h-1.5 w-1.5 rounded-full" style={{ background: c }} />
                 ))}
               </span>
+              {recursOn(s, d).length > 0 && <span className="text-[9px] leading-none">💸</span>}
               {rate > 0 && (
                 <span className="mt-1 h-1 w-6 rounded-full bg-gray-100">
                   <span className="block h-1 rounded-full bg-blue-500" style={{ width: `${rate * 100}%` }} />
@@ -142,7 +147,7 @@ function Month({ s, anchor, onPick, habitRate }: { s: State; anchor: string; onP
           );
         })}
       </div>
-      <p className="mt-3 text-center text-[11px] text-gray-400">점 = 그 날 쓴 Space · 막대 = 습관 달성률</p>
+      <p className="mt-3 text-center text-[11px] text-gray-400">점 = 그 날 쓴 Space · 막대 = 습관 달성률 · 💸 = 고정 지출</p>
     </Card>
   );
 }

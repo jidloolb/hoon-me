@@ -29,9 +29,11 @@ export type Learn = Base & { date: string; text: string; createdAt: string };
 export type Book = Base & { title: string; kind: "책" | "강의"; unit: string; total: number | null; status: "진행" | "완료" | "보류"; createdAt: string; finishedAt: string | null };
 export type BookLog = Base & { bookId: string; date: string; amount: number };
 export type Note = Base & { date: string; kind: "memo" | "diary"; text: string; createdAt: string };
+// 고정 지출(매달 같은 날 나가는 돈). fundId 가 있으면 지출이 아니라 그 계좌로 이체(모으기 넣기)
+export type Recur = Base & { name: string; amount: number; day: number; category: string; fundId: string | null; sort: number; archived: boolean };
 export type Day = Base & { date: string; reflection: string; photo: string | null; condition: number | null; closedAt: string };
 
-const COLLECTIONS = ["spaces", "tasks", "blocks", "habits", "habitLogs", "txns", "funds", "fundEntries", "metrics", "learns", "books", "bookLogs", "notes", "days"] as const;
+const COLLECTIONS = ["spaces", "tasks", "blocks", "habits", "habitLogs", "txns", "funds", "fundEntries", "metrics", "learns", "books", "bookLogs", "notes", "days", "recurs"] as const;
 type Coll = (typeof COLLECTIONS)[number];
 type CollMap = {
   spaces: Space;
@@ -48,6 +50,7 @@ type CollMap = {
   bookLogs: BookLog;
   notes: Note;
   days: Day;
+  recurs: Recur;
 };
 // meta 는 이 기기 전용(내보내기에 안 들어감): PIN·마지막 백업 시각
 export type Meta = { lastExportAt: number | null; pin: { salt: string; hash: string } | null };
@@ -280,6 +283,27 @@ export const act = {
     if (condition != null) act.setMetric("condition", condition, date);
   },
 
+  // 고정 지출
+  addRecur(r: { name: string; amount: number; day: number; category: string; fundId: string | null }) {
+    const sort = Math.max(0, ...live(state.recurs).map((x) => x.sort)) + 1;
+    put("recurs", { id: uid(), ...r, sort, archived: false, updatedAt: 0 });
+  },
+  updateRecur: (id: string, p: Partial<Recur>) => patch("recurs", id, p),
+  archiveRecur: (id: string) => patch("recurs", id, { archived: true }),
+  // 냈음 = 가계부 지출(또는 모으기 넣기)을 정해진 id 로 만든다 → 같은 달 두 번 기록 안 됨, 취소하면 그 기록만 지움
+  payRecur(id: string, month: string) {
+    const r = state.recurs[id];
+    const key = `r:${id}:${month}`;
+    const date = recurDate(r, month);
+    if (r.fundId) put("fundEntries", { id: key, fundId: r.fundId, date, kind: "deposit", amount: r.amount, createdAt: nowStr(), updatedAt: 0 });
+    else put("txns", { id: key, date, kind: "expense", amount: r.amount, category: r.category, memo: r.name, createdAt: nowStr(), updatedAt: 0 });
+  },
+  unpayRecur(id: string, month: string) {
+    const key = `r:${id}:${month}`;
+    if (state.txns[key]) remove("txns", key);
+    if (state.fundEntries[key]) remove("fundEntries", key);
+  },
+
   // 기기 전용
   setPin(pin: Meta["pin"]) {
     commit({ ...state, meta: { ...state.meta, pin } });
@@ -379,4 +403,22 @@ export function fundSummary(s: State, fundId: string) {
     value = lastValue.amount + after.reduce((a, e) => a + (e.kind === "deposit" ? e.amount : -e.amount), 0);
   }
   return { entries: es, principal, value, gain: value - principal, valuedAt: lastValue?.date ?? null };
+}
+
+// ---------- 고정 지출 ----------
+// 그 달의 실제 날짜(31일·말일 → 그 달 마지막 날로)
+export function recurDate(r: Recur, month: string) {
+  const [y, m] = month.split("-").map(Number);
+  const last = new Date(Date.UTC(y, m, 0)).getUTCDate();
+  return `${month}-${String(Math.min(r.day, last)).padStart(2, "0")}`;
+}
+export function activeRecurs(s: State) {
+  return live(s.recurs)
+    .filter((r) => !r.archived)
+    .sort((a, b) => a.day - b.day || a.sort - b.sort);
+}
+export function recurPaid(s: State, id: string, month: string) {
+  const key = `r:${id}:${month}`;
+  const t = s.txns[key] ?? s.fundEntries[key];
+  return !!t && !t.deleted;
 }

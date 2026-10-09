@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { BarRow, Card, Seg, Sheet, inputCls, btnCls } from "./ui";
+import { RecurCard } from "./Recurs";
 import { act, fundSummary, live, type Fund, type FundEntry, type State, type Txn } from "./store";
 import { dateLabel, kst, parseAmount, won, wonShort, EXPENSE_CATS, INCOME_CATS } from "./lib";
 
@@ -70,6 +71,7 @@ function Book({ s }: { s: State }) {
           <Stat label="저축률" value={incTotal ? `${Math.round((saved / incTotal) * 100)}%` : "—"} />
         </div>
       </Card>
+      <RecurCard s={s} month={month} />
       {exp.length > 0 && (
         <Card title="어디에 썼나">
           <ul className="space-y-2.5">
