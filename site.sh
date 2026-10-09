@@ -10,11 +10,13 @@ REPO=jidloolb/hoon-me
 case "$1" in
   on)
     ./deploy.sh
+    sleep 3
     gh api -X POST "repos/$REPO/pages" -f "source[branch]=gh-pages" -f "source[path]=/" >/dev/null 2>&1 || true
     echo "✓ 켬 → https://jidloolb.github.io/hoon-me/ (1~2분 뒤)"
     ;;
   off)
-    gh api -X DELETE "repos/$REPO/pages" && echo "✓ 껐어요 (주소로 열면 404)"
+    # Pages 끄기 API는 막혀 있어서(422) 배포 브랜치를 지운다 → 사이트 삭제, 주소는 404(CDN 캐시로 최대 10분 남음)
+    git push -q origin --delete gh-pages && echo "✓ 껐어요 (10분 안에 주소가 404)"
     ;;
   *)
     if gh api "repos/$REPO/pages" >/dev/null 2>&1; then echo "켜짐 → https://jidloolb.github.io/hoon-me/"; else echo "꺼짐"; fi
